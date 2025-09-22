@@ -12,11 +12,10 @@ steps:
     displayName: 'Instalar Node.js'
 
   # 2. Instalar dependencias y compilar
-  - script: |
+  - powershell: |
       npm install
       npm run build
     displayName: 'Compilar aplicación React (Vite)'
-    shell: powershell   # 👈 evita que intente usar sh en Windows
 
   # 3. Subir archivos a S3
   - task: AWSShellScript@1
