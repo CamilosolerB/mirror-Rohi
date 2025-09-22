@@ -1,21 +1,28 @@
-# Node.js with React
-# Build a Node.js project that uses React.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
-- main
+  - main   # o la rama que uses
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+  # 1. Instalar Node.js
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Instalar Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  # 2. Instalar dependencias y compilar
+  - script: |
+      npm install
+      npm run build
+    displayName: 'Compilar aplicación React (Vite)'
+
+  # 3. Subir archivos a S3
+  - task: AWSCLI@1
+    inputs:
+      awsCredentials: 'AWS connection'   # <-- pon aquí el nombre exacto
+      regionName: 'us-east-1'                    # cambia según tu región
+      awsCommand: 's3'
+      awsSubCommand: 'sync'
+      awsArguments: 'dist/ s3://rohi-ips-dev / --delete'
+    displayName: 'Deploy a S3'
