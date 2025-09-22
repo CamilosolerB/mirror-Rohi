@@ -1,8 +1,8 @@
 trigger:
-  - main   # o la rama que uses
+- main   # o la rama que uses
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: selfHost   # 👈 tu agent pool self-hosted
 
 steps:
   # 1. Instalar Node.js
@@ -18,11 +18,11 @@ steps:
     displayName: 'Compilar aplicación React (Vite)'
 
   # 3. Subir archivos a S3
-  - task: AWSCLI@1
+  - task: AWSShellScript@1
     inputs:
-      awsCredentials: 'AWS connection'   # <-- pon aquí el nombre exacto
-      regionName: 'us-east-1'                    # cambia según tu región
-      awsCommand: 's3'
-      awsSubCommand: 'sync'
-      awsArguments: 'dist/ s3://rohi-ips-dev / --delete'
+      awsCredentials: 'AWS connection'   # 👈 usa el nombre exacto de tu Service Connection
+      regionName: 'us-east-1'            # 👈 ajusta a tu región real
+      scriptType: 'inline'
+      inlineScript: |
+        aws s3 sync dist/ s3://rohi-ips-dev/ --delete
     displayName: 'Deploy a S3'
