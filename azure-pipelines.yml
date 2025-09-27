@@ -1,21 +1,28 @@
-# Node.js with React
-# Build a Node.js project that uses React.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
-- main
+- main   # rama que dispara el pipeline
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'   # 👈 usa agentes hospedados de Azure
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+  # 1. Instalar Node.js
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Instalar Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  # 2. Instalar dependencias y compilar
+  - script: |
+      npm install
+      npm run build
+    displayName: 'Compilar aplicación React (Vite)'
+
+  # 3. Subir archivos a S3
+  - task: AWSShellScript@1
+    inputs:
+      awsCredentials: 'AWS connection'   # 👈 nombre exacto de tu Service Connection en Azure
+      regionName: 'us-east-1'            # 👈 cambia si tu bucket está en otra región
+      scriptType: 'inline'
+      inlineScript: |
+        aws s3 sync dist/ s3://rohi-ips-dev/ --delete
+    displayName: 'Deploy a S3'
