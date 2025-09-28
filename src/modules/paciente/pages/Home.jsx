@@ -1,129 +1,204 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import React, { useState } from "react";
 
-// === TUS MODALES (carpeta: src/modules/paciente/components) ===
-import { AppointmentsModal } from "../components/appointments-modal"
-import { MedicalHistoryModal } from "../components/medical-history-modal"
-import { NotificationsModal } from "../components/NotificationsModal"
-import { PaymentsModal } from "../components/payments-modal"
-import { ResultsDocumentsModal } from "../components/results-documents-modal"
-import { SecretaryPanel } from "../components/SecretaryPanel"
+// Importa TUS componentes (rutas relativas desde /pages/Home.jsx)
+import { AppointmentsModal } from "../components/appointments-modal";
+import { MedicalHistoryModal } from "../components/medical-history-modal";
+import { NotificationsModal } from "../components/NotificationsModal";
+import { PaymentsModal } from "../components/payments-modal";
+import { ResultsDocumentsModal } from "../components/results-documents-modal";
+import { PatientProfile } from "../components/patient-profile";
+import { SecretaryPanel } from "../components/SecretaryPanel";
 
-// === UI de shadcn (alias @ → /src) ===
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+// Íconos (opcional)
+import {
+  Calendar,
+  FileText,
+  Bell,
+  CreditCard,
+  FileSpreadsheet,
+  User,
+  UserCog,
+} from "lucide-react";
 
 export default function Home() {
-  // Estado de modales
-  const [isAppointmentsOpen, setIsAppointmentsOpen] = useState(false)
-  const [isMedicalHistoryOpen, setIsMedicalHistoryOpen] = useState(false)
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-  const [isPaymentsOpen, setIsPaymentsOpen] = useState(false)
-  const [isResultsDocumentsOpen, setIsResultsDocumentsOpen] = useState(false)
+  // Estados para abrir/cerrar modales
+  const [openAppointments, setOpenAppointments] = useState(false);
+  const [openMedicalHistory, setOpenMedicalHistory] = useState(false);
+  const [openNotifications, setOpenNotifications] = useState(false);
+  const [openPayments, setOpenPayments] = useState(false);
+  const [openResultsDocs, setOpenResultsDocs] = useState(false);
 
-  // Notificaciones
-  const [unreadCount, setUnreadCount] = useState(0)
+  // Estado demo para contador de notificaciones
+  const [unreadCount, setUnreadCount] = useState(3);
 
-  // Datos de paciente de ejemplo (ajusta si ya los traes de tu store o API)
+  // Datos demo para historial médico (MedicalHistoryModal)
   const patientData = {
-    nombre: "Juan",
-    apellido: "Pérez",
-    email: "juan.perez@email.com",
-    documento: "CC 1.234.567.890",
-    telefono: "+57 300 000 0000",
-  }
+    nombre: "Juan Carlos",
+    apellido: "García López",
+    email: "juan.garcia@email.com",
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Encabezado */}
-        <header>
-          <h1 className="text-3xl font-bold text-gray-900">Panel del Paciente</h1>
-          <p className="text-gray-600">
-            Bienvenido {patientData.nombre}, gestiona tu información y trámites desde aquí.
-          </p>
-        </header>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header simple */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
+            Portal del Paciente
+          </h1>
 
-        <Separator />
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setOpenNotifications(true)}
+              className="relative inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              title="Centro de notificaciones"
+            >
+              <Bell className="w-4 h-4" />
+              <span>Notificaciones</span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-2 -right-2 rounded-full bg-violet-600 text-white text-[10px] px-1.5 py-0.5">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Resumen de paciente (simple, sin depender de patient-profile para evitar incompatibilidades) */}
-          <Card>
-            <CardContent className="p-6 space-y-2">
-              <h2 className="text-xl font-semibold mb-2">Mis datos</h2>
-              <div className="text-sm text-gray-700">
-                <p>
-                  <span className="font-medium">Nombre: </span>
-                  {patientData.nombre} {patientData.apellido}
-                </p>
-                <p>
-                  <span className="font-medium">Documento: </span>
-                  {patientData.documento}
-                </p>
-                <p>
-                  <span className="font-medium">Email: </span>
-                  {patientData.email}
-                </p>
-                <p>
-                  <span className="font-medium">Teléfono: </span>
-                  {patientData.telefono}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Acciones rápidas */}
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Acciones rápidas</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Button onClick={() => setIsAppointmentsOpen(true)}>Ver Citas</Button>
-                <Button onClick={() => setIsMedicalHistoryOpen(true)}>Historial Médico</Button>
-                <Button onClick={() => setIsNotificationsOpen(true)}>
-                  Notificaciones {unreadCount > 0 ? `(${unreadCount})` : ""}
-                </Button>
-                <Button onClick={() => setIsPaymentsOpen(true)}>Pagos</Button>
-                <Button className="sm:col-span-2" onClick={() => setIsResultsDocumentsOpen(true)}>
-                  Resultados y Documentos
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Panel de Secretaría (opcional) */}
-          <Card className="lg:col-span-2">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Trámites con Secretaría</h2>
-              <SecretaryPanel />
-            </CardContent>
-          </Card>
+            <button
+              onClick={() => setOpenAppointments(true)}
+              className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white hover:bg-violet-700"
+            >
+              <Calendar className="w-4 h-4" />
+              <span>Agendar</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* === MODALES === */}
-      <AppointmentsModal isOpen={isAppointmentsOpen} onClose={() => setIsAppointmentsOpen(false)} />
+      {/* Contenido principal */}
+      <main className="mx-auto max-w-6xl px-4 py-8">
+        {/* Tarjetas de acceso rápido (sin shadcn/ui) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <HomeCard
+            title="Citas"
+            desc="Gestiona y revisa tus citas médicas."
+            icon={<Calendar className="w-5 h-5" />}
+            onClick={() => setOpenAppointments(true)}
+          />
 
+          <HomeCard
+            title="Historial Médico"
+            desc="Revisa consultas, diagnósticos y tratamientos."
+            icon={<FileText className="w-5 h-5" />}
+            onClick={() => setOpenMedicalHistory(true)}
+          />
+
+          <HomeCard
+            title="Resultados y Documentos"
+            desc="Descarga laboratorios, imágenes e informes."
+            icon={<FileSpreadsheet className="w-5 h-5" />}
+            onClick={() => setOpenResultsDocs(true)}
+          />
+
+          <HomeCard
+            title="Pagos"
+            desc="Consulta y descarga tus comprobantes."
+            icon={<CreditCard className="w-5 h-5" />}
+            onClick={() => setOpenPayments(true)}
+          />
+
+          <HomeCard
+            title="Perfil"
+            desc="Actualiza tus datos personales."
+            icon={<User className="w-5 h-5" />}
+            onClick={() => {
+              // Abre el perfil dentro de ResultsDocumentsModal? No: tu perfil es un componente aparte.
+              // Aquí simplemente navegamos a un ancla o podrías mostrarlo en la página.
+              // Para demo, abrimos Historial (puedes cambiarlo si tu PatientProfile es modal).
+              setOpenMedicalHistory(true);
+            }}
+            cta="Abrir"
+          />
+
+          <HomeCard
+            title="Panel de Secretaría"
+            desc="Gestiona solicitudes (vista interna)."
+            icon={<UserCog className="w-5 h-5" />}
+            onClick={() => {
+              // El SecretaryPanel no es modal; lo mostramos debajo.
+              // Scroll a la sección del panel:
+              document.getElementById("secretary-panel")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            cta="Ver"
+          />
+        </div>
+
+        {/* Sección opcional: render del perfil o panel si deseas verlos en la home */}
+        <section className="mt-10">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Mi Perfil</h2>
+          <div className="rounded-lg border border-gray-200 bg-white">
+            <PatientProfile />
+          </div>
+        </section>
+
+        <section id="secretary-panel" className="mt-10">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Panel de Secretaría</h2>
+          <div className="rounded-lg border border-gray-200 bg-white">
+            <SecretaryPanel />
+          </div>
+        </section>
+      </main>
+
+      {/* ======= Modales ======= */}
+
+      {/* Citas */}
+      <AppointmentsModal
+        isOpen={openAppointments}
+        onClose={() => setOpenAppointments(false)}
+      />
+
+      {/* Historial Médico */}
       <MedicalHistoryModal
-        isOpen={isMedicalHistoryOpen}
-        onClose={() => setIsMedicalHistoryOpen(false)}
+        isOpen={openMedicalHistory}
+        onClose={() => setOpenMedicalHistory(false)}
         patientData={patientData}
       />
 
+      {/* Notificaciones */}
       <NotificationsModal
-        isOpen={isNotificationsOpen}
-        onClose={() => setIsNotificationsOpen(false)}
+        isOpen={openNotifications}
+        onClose={() => setOpenNotifications(false)}
         unreadCount={unreadCount}
         onUpdateUnreadCount={setUnreadCount}
       />
 
-      <PaymentsModal isOpen={isPaymentsOpen} onClose={() => setIsPaymentsOpen(false)} />
+      {/* Pagos */}
+      <PaymentsModal
+        isOpen={openPayments}
+        onClose={() => setOpenPayments(false)}
+      />
 
+      {/* Resultados / Documentos */}
       <ResultsDocumentsModal
-        isOpen={isResultsDocumentsOpen}
-        onClose={() => setIsResultsDocumentsOpen(false)}
+        isOpen={openResultsDocs}
+        onClose={() => setOpenResultsDocs(false)}
       />
     </div>
-  )
+  );
+}
+
+/** Tarjeta simple sin shadcn/ui */
+function HomeCard({ title, desc, icon, onClick, cta = "Abrir" }) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-5 hover:shadow-sm transition-shadow">
+      <div className="flex items-center gap-2 text-violet-700 mb-2">{icon}<span className="font-medium">{title}</span></div>
+      <p className="text-sm text-gray-600 mb-4">{desc}</p>
+      <button
+        onClick={onClick}
+        className="inline-flex items-center rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white hover:bg-violet-700"
+      >
+        {cta}
+      </button>
+    </div>
+  );
 }
