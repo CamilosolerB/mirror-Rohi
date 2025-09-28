@@ -1,28 +1,27 @@
 trigger:
-- main   # rama que dispara el pipeline
+- main   # Rama que dispara el pipeline
 
 pool:
-  vmImage: 'ubuntu-latest'   # 👈 usa agentes hospedados de Azure
+  vmImage: 'ubuntu-latest'   # Agente Microsoft-hosted gratuito
+
+variables:
+  AWS_REGION: 'us-east-1'         # Región de AWS
+  LAMBDA_NAME: 'ROHI_DEV_USER'    # Nombre exacto de tu Lambda en AWS
 
 steps:
-  # 1. Instalar Node.js
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '18.x'
-    displayName: 'Instalar Node.js'
-
-  # 2. Instalar dependencias y compilar
+  # 1. Empaquetar solo el código fuente (sin dependencias, ya están en el Layer)
   - script: |
-      npm install
-      npm run build
-    displayName: 'Compilar aplicación React (Vite)'
+      zip -r lambda-code.zip *.py
+    displayName: 'Empaquetar código fuente de Lambda'
 
-  # 3. Subir archivos a S3
+  # 2. Desplegar el código a la Lambda en AWS
   - task: AWSShellScript@1
     inputs:
-      awsCredentials: 'AWS connection'   # 👈 nombre exacto de tu Service Connection en Azure
-      regionName: 'us-east-1'            # 👈 cambia si tu bucket está en otra región
+      awsCredentials: 'AWS connection'   # 👈 Nombre de tu Service Connection en DevOps
+      regionName: 'us-east-1'
       scriptType: 'inline'
       inlineScript: |
-        aws s3 sync dist/ s3://rohi-ips-dev/ --delete
-    displayName: 'Deploy a S3'
+        aws lambda update-function-code \
+          --function-name ROHI_DEV_USER \
+          --zip-file fileb://lambda-code.zip
+    displayName: 'Actualizar Lambda en AWS'
