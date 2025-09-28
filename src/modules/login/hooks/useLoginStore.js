@@ -13,16 +13,6 @@ import {
   autoSignIn,
 } from "aws-amplify/auth";
 
-/*import {
-  onLoading,
-  onError,
-  onChecking,
-  register,
-  login,
-  confirmCode,
-  logout,
-  onLogin,
-  notAuthenticated,
-  finishRegister,
-  onCode,
-}from "../../store/auth";*/
+import {
+  isLoggedIn
+} from  ""
