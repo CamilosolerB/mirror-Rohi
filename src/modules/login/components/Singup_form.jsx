@@ -1,23 +1,30 @@
 import { useState } from "react";
 
 export default function Singup_form() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [cedula, setCedula] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    cedula: "",
+    telefono: "",
+    password: "",
+    confirm: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const BASE = import.meta.env.VITE_API_BASE_URL;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    if (password !== confirm) {
+    if (formData.password !== formData.confirm) {
       setError("Las contraseñas no coinciden");
       setLoading(false);
       return;
@@ -27,7 +34,13 @@ export default function Singup_form() {
       const res = await fetch(`${BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, cedula, telefono, password }),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          cedula: formData.cedula,
+          telefono: formData.telefono,
+          password: formData.password,
+        }),
       });
 
       const isJson = (res.headers.get("content-type") || "").includes("application/json");
@@ -65,9 +78,10 @@ export default function Singup_form() {
           <label className="block text-sm font-medium text-gray-700">Nombre completo</label>
           <input
             type="text"
+            name="name"
             placeholder="Juan Pérez"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleChange}
             required
             className="mt-1 w-full rounded-lg border px-4 py-2 outline-none focus:border-[#9083D5] focus:ring-2 focus:ring-[#9083D5]"
           />
@@ -78,9 +92,10 @@ export default function Singup_form() {
           <label className="block text-sm font-medium text-gray-700">Correo</label>
           <input
             type="email"
+            name="email"
             placeholder="correo@ejemplo.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
             required
             className="mt-1 w-full rounded-lg border px-4 py-2 outline-none focus:border-[#9083D5] focus:ring-2 focus:ring-[#9083D5]"
           />
@@ -92,9 +107,10 @@ export default function Singup_form() {
             <label className="block text-sm font-medium text-gray-700">Cédula</label>
             <input
               type="text"
+              name="cedula"
               placeholder="1234567890"
-              value={cedula}
-              onChange={(e) => setCedula(e.target.value)}
+              value={formData.cedula}
+              onChange={handleChange}
               required
               className="mt-1 w-full rounded-lg border px-4 py-2 outline-none focus:border-[#9083D5] focus:ring-2 focus:ring-[#9083D5]"
             />
@@ -103,9 +119,10 @@ export default function Singup_form() {
             <label className="block text-sm font-medium text-gray-700">Teléfono</label>
             <input
               type="tel"
+              name="telefono"
               placeholder="3001234567"
-              value={telefono}
-              onChange={(e) => setTelefono(e.target.value)}
+              value={formData.telefono}
+              onChange={handleChange}
               required
               className="mt-1 w-full rounded-lg border px-4 py-2 outline-none focus:border-[#9083D5] focus:ring-2 focus:ring-[#9083D5]"
             />
@@ -118,9 +135,10 @@ export default function Singup_form() {
             <label className="block text-sm font-medium text-gray-700">Contraseña</label>
             <input
               type="password"
+              name="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               required
               className="mt-1 w-full rounded-lg border px-4 py-2 outline-none focus:border-[#9083D5] focus:ring-2 focus:ring-[#9083D5]"
             />
@@ -129,9 +147,10 @@ export default function Singup_form() {
             <label className="block text-sm font-medium text-gray-700">Confirmar contraseña</label>
             <input
               type="password"
+              name="confirm"
               placeholder="••••••••"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
+              value={formData.confirm}
+              onChange={handleChange}
               required
               className="mt-1 w-full rounded-lg border px-4 py-2 outline-none focus:border-[#9083D5] focus:ring-2 focus:ring-[#9083D5]"
             />

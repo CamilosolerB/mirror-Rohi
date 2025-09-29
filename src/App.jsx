@@ -8,7 +8,8 @@ function App() {
       <Routes>
         {/* Rutas públicas */}
         <Route path="/" element={<Login />} />
-        <Route path="/Singup" element={<Singup />} />           
+        <Route path="/Singup" element={<Singup />} />
+        <Route path="/Verificar" element={<Verificar/>} />           
         
         {/* Ruta 404 */}
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />

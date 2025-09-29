@@ -13,7 +13,6 @@ import {
   resetPassword,
   confirmResetPassword,
   autoSignIn,
-  autoSignIn,
 } from "aws-amplify/auth";
 
 
