@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 
 // Importa TUS componentes (rutas relativas desde /pages/Home.jsx)
-import { AppointmentsModal } from "../components/appointments-modal";
-import { MedicalHistoryModal } from "../components/medical-history-modal";
-import { NotificationsModal } from "../components/NotificationsModal";
+import AppointmentsModal from "../components/appointments-modal";
+import MedicalHistoryModal from "../components/medical-history-modal";
+import NotificationsModal from "../components/NotificationsModal";
 import { PaymentsModal } from "../components/payments-modal";
-import { ResultsDocumentsModal } from "../components/results-documents-modal";
-import { PatientProfile } from "../components/patient-profile";
+import ResultsDocumentsModal from "../components/results-documents-modal";
+import PatientProfile from "../components/patient-profile";
 import { SecretaryPanel } from "../components/SecretaryPanel";
 
 // Íconos (opcional)
