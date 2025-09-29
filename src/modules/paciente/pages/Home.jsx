@@ -46,10 +46,10 @@ export default function Home() {
       {/* Header simple */}
       <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold text-[#9083D5]">
+          <h1 className="text-xl md:text-2xl font-semibold text-">
             BIENVENIDO A ROHI IPS
           </h1>
-            
+            <h2 className="text-xl font-bold text-[#9083D5]">Crear cuenta</h2>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setOpenNotifications(true)}
