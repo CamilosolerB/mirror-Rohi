@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Patient_profile from "./patient-profile";
 
 /** Props:
  *  - isOpen: boolean
@@ -8,7 +9,9 @@ export default function AppointmentsModal({ isOpen, onClose }) {
   const [viewMode, setViewMode] = useState("week"); // "week" | "month"
   const [currentDate, setCurrentDate] = useState(new Date());
   const [draggedAppointment, setDraggedAppointment] = useState(null);
-  const [activeTab, setActiveTab] = useState("calendario"); // calendario | historial | agendar | resumen
+  const [activeTab, setActiveTab] = useState("calendario"); // calendario | historial | resumen
+  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [dateFilter, setDateFilter] = useState("");
@@ -275,20 +278,31 @@ export default function AppointmentsModal({ isOpen, onClose }) {
           {/* Header */}
           <div className="p-4 border-b flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">Gestión de Citas</h2>
-            <button
-              onClick={onClose}
-              className="h-8 w-8 grid place-items-center rounded-md hover:bg-gray-100"
-              title="Cerrar"
-              aria-label="Cerrar"
-            >
-              ✕
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Profile icon (opens sidebar) */}
+              <button
+                onClick={() => setShowProfileSidebar(true)}
+                className="h-8 w-8 grid place-items-center rounded-full hover:bg-gray-100"
+                title="Perfil"
+                aria-label="Perfil"
+              >
+                👤
+              </button>
+              <button
+                onClick={onClose}
+                className="h-8 w-8 grid place-items-center rounded-md hover:bg-gray-100"
+                title="Cerrar"
+                aria-label="Cerrar"
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
           {/* Tabs */}
           <div className="p-4">
             <div className="grid grid-cols-4 gap-2">
-              {["calendario","historial","agendar","resumen"].map((t) => (
+              {["calendario","historial","resumen"].map((t) => (
                 <button
                   key={t}
                   onClick={() => setActiveTab(t)}
@@ -693,6 +707,23 @@ export default function AppointmentsModal({ isOpen, onClose }) {
           </div>
         </div>
       </div>
+      {/* Profile sidebar drawer */}
+      {showProfileSidebar && (
+        <div className="fixed inset-y-0 right-0 z-[70] w-72 bg-white shadow-lg border-l">
+          <div className="p-4 flex items-center justify-between border-b">
+            <h3 className="font-semibold">Cuenta</h3>
+            <button className="h-8 w-8 grid place-items-center rounded hover:bg-gray-100" onClick={() => setShowProfileSidebar(false)}>✕</button>
+          </div>
+          <div className="p-4 space-y-3">
+            <button className="w-full text-left px-3 py-2 rounded hover:bg-gray-50" onClick={() => { setShowProfileModal(true); setShowProfileSidebar(false); }}>
+              Mi Perfil
+            </button>
+            <button className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-red-600" onClick={() => { /* TODO: implement logout */ alert('Cerrar sesión (a implementar)'); }}>
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Detalle de cita */}
       {showAppointmentDetail && selectedAppointment && (
@@ -762,6 +793,10 @@ export default function AppointmentsModal({ isOpen, onClose }) {
       )}
       {showErrorPopup && (
         <Popup type="error" message={errorMessage || "Ocurrió un error"} onClose={() => setShowErrorPopup(false)} />
+      )}
+      {/* Patient profile modal (opened from sidebar) */}
+      {showProfileModal && (
+        <Patient_profile isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} patientData={{}} onUpdateData={() => {}} />
       )}
     </>
   );

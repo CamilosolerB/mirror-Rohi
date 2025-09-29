@@ -32,6 +32,7 @@ export default function Home() {
   // Estado demo para contador de notificaciones
   const [unreadCount, setUnreadCount] = useState(3);
   const [openProfileModal, setOpenProfileModal] = useState(false);
+  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
 
   // Datos demo para perfil (ahora en estado para poder actualizar desde el modal)
   const [patientData, setPatientData] = useState({
@@ -45,10 +46,10 @@ export default function Home() {
       {/* Header simple */}
       <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
-            Portal del Paciente
+          <h1 className="text-xl md:text-2xl font-semibold text-[#9083D5]">
+            BIENVENIDO A ROHI IPS
           </h1>
-
+            
           <div className="flex items-center gap-3">
             <button
               onClick={() => setOpenNotifications(true)}
@@ -64,12 +65,14 @@ export default function Home() {
               )}
             </button>
 
+            {/* Profile icon replaces Agendar */}
             <button
-              onClick={() => setOpenAppointments(true)}
-              className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white hover:bg-violet-700"
+              onClick={() => setShowProfileSidebar(true)}
+              className="h-8 w-8 grid place-items-center rounded-full hover:bg-gray-100"
+              title="Perfil"
+              aria-label="Perfil"
             >
-              <Calendar className="w-4 h-4" />
-              <span>Agendar</span>
+              👤
             </button>
           </div>
         </div>
@@ -118,13 +121,7 @@ export default function Home() {
           {/* Tarjeta de Secretaría eliminada */}
         </div>
 
-        {/* Sección opcional: render del perfil o panel si deseas verlos en la home */}
-        <section id="mi-perfil" className="mt-10">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Mi Perfil</h2>
-            <div className="rounded-lg border border-gray-200 bg-white">
-              <PatientProfile isOpen={openProfileModal} onClose={() => setOpenProfileModal(false)} patientData={patientData} onUpdateData={setPatientData} />
-            </div>
-        </section>
+        {/* Sección de perfil integrada ahora en modal/drawer; sección estática eliminada */}
 
         {/* Sección de Secretaría eliminada */}
       </main>
@@ -165,6 +162,23 @@ export default function Home() {
       />
 
       {/* Perfil en modal (renderizado desde la sección de 'Mi Perfil') */}
+      {/* Profile sidebar drawer (opened from header) */}
+      {showProfileSidebar && (
+        <div className="fixed inset-y-0 right-0 z-[60] w-72 bg-white shadow-lg border-l">
+          <div className="p-4 flex items-center justify-between border-b">
+            <h3 className="font-semibold">Cuenta</h3>
+            <button className="h-8 w-8 grid place-items-center rounded hover:bg-gray-100" onClick={() => setShowProfileSidebar(false)}>✕</button>
+          </div>
+          <div className="p-4 space-y-3">
+            <button className="w-full text-left px-3 py-2 rounded hover:bg-gray-50" onClick={() => { setOpenProfileModal(true); setShowProfileSidebar(false); }}>
+              Mi Perfil
+            </button>
+            <button className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-red-600" onClick={() => { alert('Cerrar sesión (a implementar)'); }}>
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

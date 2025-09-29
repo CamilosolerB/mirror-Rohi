@@ -416,14 +416,14 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
                   <button
                     onClick={onClose}
                     disabled={isLoading}
-                    className="btn btn-outline flex-1"
+                    className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-4 py-2 flex-1"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={isLoading}
-                    className="btn btn-primary flex-1"
+                    className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-4 py-2 flex-1"
                   >
                     {isLoading ? "Guardando..." : "Guardar"}
                   </button>

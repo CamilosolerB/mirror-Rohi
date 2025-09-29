@@ -146,7 +146,8 @@ export default function Singup_form() {
             ? "bg-[#b5aef0] cursor-not-allowed"
             : "bg-[#9083D5] hover:bg-[#7f72c2]"
         }`}
-      >
+      > 
+      <a href="/Verificar" className="text-[#9083D5] hover:underline"></a>
         {loading ? "Registrando..." : "Registrarse"}
       </button>
 
