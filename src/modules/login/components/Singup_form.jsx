@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useAuthStore } from "../hooks/useLoginStore";
 
 export default function Singup_form() {
   const [formData, setFormData] = useState({
@@ -12,7 +14,9 @@ export default function Singup_form() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const BASE = import.meta.env.VITE_API_BASE_URL;
+  // Obtén la función startRegister desde el store
+  const startRegister = useAuthStore((state) => state.startRegister);
+  const navigate = useNavigate(); // Obtén navigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,41 +25,21 @@ export default function Singup_form() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setLoading(true); // Activa el estado de carga
+    setError(""); // Limpia errores previos
 
-    if (formData.password !== formData.confirm) {
-      setError("Las contraseñas no coinciden");
-      setLoading(false);
-      return;
-    }
-
+    console.log(useAuthStore.getState()); // Verifica el estado completo del store
     try {
-      const res = await fetch(`${BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          cedula: formData.cedula,
-          telefono: formData.telefono,
-          password: formData.password,
-        }),
-      });
-
-      const isJson = (res.headers.get("content-type") || "").includes("application/json");
-      const data = isJson ? await res.json() : null;
-
-      if (!res.ok) {
-        throw new Error(data?.error?.message || "Error al registrar");
-      }
-
-      alert("¡Registro exitoso!");
+      // Llama a startRegister con los datos del formulario y navigate
+      await startRegister(formData, navigate);
+      console.log("startRegister fue llamado correctamente");
     } catch (err) {
-      setError(err.message || "Error de registro");
+      console.error("Error en startRegister:", err);
+      setError(err.message || "Error al registrar");
     } finally {
-      setLoading(false);
+      setLoading(false); // Desactiva el estado de carga
     }
+
   };
 
   return (
@@ -68,9 +52,7 @@ export default function Singup_form() {
         <p className="text-sm text-gray-600">Completa los campos para registrarte.</p>
       </div>
 
-      {error && (
-        <p className="text-center text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="text-center text-sm text-red-600">{error}</p>}
 
       <div className="space-y-6">
         {/* Nombre completo */}
@@ -165,6 +147,7 @@ export default function Singup_form() {
             ? "bg-[#b5aef0] cursor-not-allowed"
             : "bg-[#9083D5] hover:bg-[#7f72c2]"
         }`}
+        type="submit"
       >
         {loading ? "Registrando..." : "Registrarse"}
       </button>

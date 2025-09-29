@@ -4,9 +4,7 @@ import { create } from 'zustand';
 import {
   signUp,
   confirmSignUp,
-  resendSignUpCode,
   signIn,
-  fetchAuthSession,
   signOut,
   resendSignUpCode,
   fetchAuthSession,
@@ -49,9 +47,9 @@ export const useAuthStore = create((set, get) => ({
 
   startRegister: async (formData, navigate) => {
     set({ isLoading: true, message: undefined });
-    const { password, confirmPassword, email } = formData;
+    const { password, confirm, email } = formData;
 
-    if (password !== confirmPassword) {
+    if (password !== confirm) {
       set({ isLoading: false, message: 'Las claves no son iguales' });
       return;
     }
@@ -62,11 +60,11 @@ export const useAuthStore = create((set, get) => ({
         password,
         options: { autoSignIn: true },
       });
-      
+      console.log({ userId, nextStep });
+
       if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
         const tempUser = { email: formData.email, name: formData.fullName, id: userId };
         set({ user: tempUser, status: 'not-authenticated', isLoading: false });
-        navigate('/confirm_register');
       }
     } catch (error) {
       set({ isLoading: false, message: error.message });
