@@ -333,9 +333,11 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
     <>
       {/* Overlay */}
       <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-lg">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b">
+        {/* Fixed-height modal with scrollable content to avoid resizing when tabs change */}
+        <div className="w-full max-w-5xl h-[80vh] sm:h-[85vh] flex flex-col bg-white rounded-2xl shadow-lg">
+          {/* Header (sticky) */}
+          <div className="sticky top-0 z-20 bg-white border-b">
+            <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <Initials />
               <h2 className="text-lg font-semibold text-gray-900">Mi Perfil</h2>
@@ -349,9 +351,10 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
               ✕
             </button>
           </div>
+          </div>
 
-          {/* Tabs */}
-          <div className="p-4">
+          {/* Tabs and content (scrollable) */}
+          <div className="flex-1 overflow-y-auto p-4">
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
               <TabButton value="datos">Datos Personales</TabButton>
               <TabButton value="preferencias">Preferencias</TabButton>
@@ -362,7 +365,7 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
 
             {/* --- DATOS PERSONALES --- */}
             {activeTab === "datos" && (
-              <div className="mt-6 space-y-4">
+              <div className="mt-6 space-y-4 pb-6">
                 <Field label="Nombre del paciente">
                   <input
                     className="input"
@@ -409,7 +412,7 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
                   />
                 </Field>
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-2 sticky bottom-0 bg-white/80 backdrop-blur-sm p-3 -mx-4">
                   <button
                     onClick={onClose}
                     disabled={isLoading}
@@ -666,7 +669,7 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
                 {representanteFile && (
                   <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                     <span className="text-gray-600 text-sm truncate">{representanteFile.name}</span>
-                    <button className="h-6 w-6 grid place-items-center rounded hover:bg-gray-200" onClick={() => setRepresentanteFile(null)}>✕</button>
+                    <button className="h-6 w-6 grid place-items-center rounded btn btn-outline" onClick={() => setRepresentanteFile(null)}>✕</button>
                   </div>
                 )}
 
@@ -707,7 +710,7 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
                 {desvinculacionFile && (
                   <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                     <span className="text-gray-600 text-sm truncate">{desvinculacionFile.name}</span>
-                    <button className="h-6 w-6 grid place-items-center rounded hover:bg-gray-200" onClick={() => setDesvinculacionFile(null)}>✕</button>
+                    <button className="h-6 w-6 grid place-items-center rounded btn btn-outline" onClick={() => setDesvinculacionFile(null)}>✕</button>
                   </div>
                 )}
 
@@ -728,8 +731,6 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
           </div>
         </div>
       </div>
-
-      {/* Popups */}
       {showSuccessPopup && (
         <Popup onClose={() => setShowSuccessPopup(false)} type="success" message={successMessage || "Operación exitosa"} />
       )}
@@ -743,10 +744,11 @@ export default function Patient_profile({ isOpen, onClose, patientData, onUpdate
 /* ---------- Subcomponentes simples (estilos Tailwind) ---------- */
 
 function Field({ label, children }) {
+  // Responsive: apila en pantallas muy pequeñas, en linea en sm+
   return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
-      {children}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+      <label className="text-sm font-medium text-gray-700 sm:w-40">{label}:</label>
+      <div className="mt-1 sm:mt-0 flex-1">{children}</div>
     </div>
   );
 }

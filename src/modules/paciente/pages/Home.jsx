@@ -9,7 +9,6 @@ import NotificationsModal from "../components/NotificationsModal";
 import { PaymentsModal } from "../components/payments-modal";
 import ResultsDocumentsModal from "../components/results-documents-modal";
 import PatientProfile from "../components/patient-profile";
-import { SecretaryPanel } from "../components/SecretaryPanel";
 
 // Íconos (opcional)
 import {
@@ -32,13 +31,14 @@ export default function Home() {
 
   // Estado demo para contador de notificaciones
   const [unreadCount, setUnreadCount] = useState(3);
+  const [openProfileModal, setOpenProfileModal] = useState(false);
 
-  // Datos demo para historial médico (MedicalHistoryModal)
-  const patientData = {
+  // Datos demo para perfil (ahora en estado para poder actualizar desde el modal)
+  const [patientData, setPatientData] = useState({
     nombre: "Juan Carlos",
     apellido: "García López",
     email: "juan.garcia@email.com",
-  };
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -111,42 +111,22 @@ export default function Home() {
             title="Perfil"
             desc="Actualiza tus datos personales."
             icon={<User className="w-5 h-5" />}
-            onClick={() => {
-              // Abre el perfil dentro de ResultsDocumentsModal? No: tu perfil es un componente aparte.
-              // Aquí simplemente navegamos a un ancla o podrías mostrarlo en la página.
-              // Para demo, abrimos Historial (puedes cambiarlo si tu PatientProfile es modal).
-              setOpenMedicalHistory(true);
-            }}
+            onClick={() => setOpenProfileModal(true)}
             cta="Abrir"
           />
-
-          <HomeCard
-            title="Panel de Secretaría"
-            desc="Gestiona solicitudes (vista interna)."
-            icon={<UserCog className="w-5 h-5" />}
-            onClick={() => {
-              // El SecretaryPanel no es modal; lo mostramos debajo.
-              // Scroll a la sección del panel:
-              document.getElementById("secretary-panel")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            cta="Ver"
-          />
+          
+          {/* Tarjeta de Secretaría eliminada */}
         </div>
 
         {/* Sección opcional: render del perfil o panel si deseas verlos en la home */}
-        <section className="mt-10">
+        <section id="mi-perfil" className="mt-10">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Mi Perfil</h2>
-          <div className="rounded-lg border border-gray-200 bg-white">
-            <PatientProfile />
-          </div>
+            <div className="rounded-lg border border-gray-200 bg-white">
+              <PatientProfile isOpen={openProfileModal} onClose={() => setOpenProfileModal(false)} patientData={patientData} onUpdateData={setPatientData} />
+            </div>
         </section>
 
-        <section id="secretary-panel" className="mt-10">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Panel de Secretaría</h2>
-          <div className="rounded-lg border border-gray-200 bg-white">
-            <SecretaryPanel />
-          </div>
-        </section>
+        {/* Sección de Secretaría eliminada */}
       </main>
 
       {/* ======= Modales ======= */}
@@ -183,11 +163,13 @@ export default function Home() {
         isOpen={openResultsDocs}
         onClose={() => setOpenResultsDocs(false)}
       />
+
+      {/* Perfil en modal (renderizado desde la sección de 'Mi Perfil') */}
     </div>
   );
 }
 
-/** Tarjeta simple sin shadcn/ui */
+
 function HomeCard({ title, desc, icon, onClick, cta = "Abrir" }) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-5 hover:shadow-sm transition-shadow">

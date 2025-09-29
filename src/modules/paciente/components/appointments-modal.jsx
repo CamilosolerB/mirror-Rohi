@@ -495,7 +495,7 @@ export default function AppointmentsModal({ isOpen, onClose }) {
                         </div>
                         <div className="flex items-center gap-2">
                           <button
-                            className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
+                            className="btn btn-primary px-3 py-1.5"
                             onClick={() => { setSelectedAppointment(apt); setShowAppointmentDetail(true); }}
                           >
                             Ver detalles
@@ -503,7 +503,7 @@ export default function AppointmentsModal({ isOpen, onClose }) {
                           {canRescheduleOrCancel(apt) && (
                             <>
                               <button
-                                className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
+                                className="btn btn-primary px-3 py-1.5"
                                 onClick={() => { setSelectedAppointment(apt); setShowReschedule(true); }}
                               >
                                 ✏️ Reprogramar
@@ -638,7 +638,7 @@ export default function AppointmentsModal({ isOpen, onClose }) {
                             {canRescheduleOrCancel(nextApt) && (
                               <>
                                 <button
-                                  className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
+                                  className="btn btn-primary px-3 py-1.5"
                                   onClick={() => { setSelectedAppointment(nextApt); setShowReschedule(true); }}
                                 >
                                   Reprogramar
@@ -685,7 +685,7 @@ export default function AppointmentsModal({ isOpen, onClose }) {
                   </div>
                   <div className="p-4 flex flex-wrap gap-3">
                     <button className="btn btn-primary" onClick={() => setActiveTab("agendar")}>＋ Agendar Nueva Cita</button>
-                    <button className="rounded-lg border px-3 py-2 hover:bg-gray-100" onClick={() => setActiveTab("historial")}>📅 Ver Historial Completo</button>
+                    <button className="btn btn-primary" onClick={() => setActiveTab("historial")}>📅 Ver Historial Completo</button>
                   </div>
                 </div>
               </div>

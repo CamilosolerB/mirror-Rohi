@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom brand color overrides: use #9083D5 as the primary purple throughout the app.
+	 These rules intentionally come after Tailwind's utilities so they override the generated classes.
+	 If you later prefer to change Tailwind config, move these into the theme colors instead.
+*/
+:root {
+	--brand-600: #9083D5;
+	--brand-700: #7c63c8; /* slightly darker for hover */
+	--brand-500: #bfa8e8; /* lighter variant */
+}
+
+/* Background / text / border overrides for common violet utilities */
+.bg-violet-600 { background-color: var(--brand-600) !important; }
+.bg-violet-500 { background-color: var(--brand-500) !important; }
+.text-violet-600 { color: var(--brand-600) !important; }
+.text-violet-700 { color: var(--brand-700) !important; }
+.border-violet-600 { border-color: var(--brand-600) !important; }
+.focus\:border-violet-600:focus { border-color: var(--brand-600) !important; }
+
+/* Hover state utilities (Tailwind escapes colons in classnames) */
+.hover\:bg-violet-700:hover { background-color: var(--brand-700) !important; }
+.hover\:bg-violet-600:hover { background-color: var(--brand-600) !important; }
+
+/* Peer/checked utilities */
+.peer-checked\:bg-violet-600.peer-checked, .peer-checked\\:bg-violet-600 { background-color: var(--brand-600) !important; }
+
+/* Ensure ring/badge and similar components using violet map to brand */
+.ring-violet-600 { --tw-ring-color: var(--brand-600) !important; }
+.bg-violet-50 { background-color: rgba(144, 131, 213, 0.06) !important; }
+
+/* Utility for small elements that used violet-600 text */
+.text-violet-600 { color: var(--brand-600) !important; }
+
