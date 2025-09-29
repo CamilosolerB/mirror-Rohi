@@ -6,20 +6,14 @@ import React, { useState } from "react";
 import AppointmentsModal from "../components/appointments-modal";
 import MedicalHistoryModal from "../components/medical-history-modal";
 import NotificationsModal from "../components/NotificationsModal";
+// OJO: si payments-modal exporta por NOMBRE, deja las llaves.
+// Si lo cambias a export default, importa sin llaves.
 import { PaymentsModal } from "../components/payments-modal";
 import ResultsDocumentsModal from "../components/results-documents-modal";
 import PatientProfile from "../components/patient-profile";
 
 // Íconos (opcional)
-import {
-  Calendar,
-  FileText,
-  Bell,
-  CreditCard,
-  FileSpreadsheet,
-  User,
-  UserCog,
-} from "lucide-react";
+import { Calendar, FileText, Bell, CreditCard, FileSpreadsheet, User } from "lucide-react";
 
 export default function Home() {
   // Estados para abrir/cerrar modales
@@ -28,28 +22,29 @@ export default function Home() {
   const [openNotifications, setOpenNotifications] = useState(false);
   const [openPayments, setOpenPayments] = useState(false);
   const [openResultsDocs, setOpenResultsDocs] = useState(false);
-
-  // Estado demo para contador de notificaciones
-  const [unreadCount, setUnreadCount] = useState(3);
   const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
 
-  // Datos demo para perfil (ahora en estado para poder actualizar desde el modal)
+  // Notificaciones demo
+  const [unreadCount, setUnreadCount] = useState(3);
+
+  // Datos demo para perfil
   const [patientData, setPatientData] = useState({
     nombre: "Juan Carlos",
     apellido: "García López",
     email: "juan.garcia@email.com",
+    ciudad: "Bogotá",
+    telefono: "3001234567",
   });
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header simple */}
+      {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold text-">
+          <h1 className="text-xl md:text-2xl font-semibold text-[#9083D5]">
             BIENVENIDO A ROHI IPS
           </h1>
-            <h2 className="text-xl font-bold text-[#9083D5]">Crear cuenta</h2>
+
           <div className="flex items-center gap-3">
             <button
               onClick={() => setOpenNotifications(true)}
@@ -65,9 +60,9 @@ export default function Home() {
               )}
             </button>
 
-            {/* Profile icon replaces Agendar */}
+            {/* Abre DIRECTO el modal de Perfil */}
             <button
-              onClick={() => setShowProfileSidebar(true)}
+              onClick={() => setOpenProfileModal(true)}
               className="h-8 w-8 grid place-items-center rounded-full hover:bg-gray-100"
               title="Perfil"
               aria-label="Perfil"
@@ -78,9 +73,9 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Contenido principal */}
+      {/* Contenido */}
       <main className="mx-auto max-w-6xl px-4 py-8">
-        {/* Tarjetas de acceso rápido (sin shadcn/ui) */}
+        {/* Tarjetas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <HomeCard
             title="Citas"
@@ -117,31 +112,18 @@ export default function Home() {
             onClick={() => setOpenProfileModal(true)}
             cta="Abrir"
           />
-          
-          {/* Tarjeta de Secretaría eliminada */}
         </div>
-
-        {/* Sección de perfil integrada ahora en modal/drawer; sección estática eliminada */}
-
-        {/* Sección de Secretaría eliminada */}
       </main>
 
       {/* ======= Modales ======= */}
+      <AppointmentsModal isOpen={openAppointments} onClose={() => setOpenAppointments(false)} />
 
-      {/* Citas */}
-      <AppointmentsModal
-        isOpen={openAppointments}
-        onClose={() => setOpenAppointments(false)}
-      />
-
-      {/* Historial Médico */}
       <MedicalHistoryModal
         isOpen={openMedicalHistory}
         onClose={() => setOpenMedicalHistory(false)}
         patientData={patientData}
       />
 
-      {/* Notificaciones */}
       <NotificationsModal
         isOpen={openNotifications}
         onClose={() => setOpenNotifications(false)}
@@ -149,45 +131,29 @@ export default function Home() {
         onUpdateUnreadCount={setUnreadCount}
       />
 
-      {/* Pagos */}
-      <PaymentsModal
-        isOpen={openPayments}
-        onClose={() => setOpenPayments(false)}
-      />
+      <PaymentsModal isOpen={openPayments} onClose={() => setOpenPayments(false)} />
 
-      {/* Resultados / Documentos */}
-      <ResultsDocumentsModal
-        isOpen={openResultsDocs}
-        onClose={() => setOpenResultsDocs(false)}
-      />
+      <ResultsDocumentsModal isOpen={openResultsDocs} onClose={() => setOpenResultsDocs(false)} />
 
-      {/* Perfil en modal (renderizado desde la sección de 'Mi Perfil') */}
-      {/* Profile sidebar drawer (opened from header) */}
-      {showProfileSidebar && (
-        <div className="fixed inset-y-0 right-0 z-[60] w-72 bg-white shadow-lg border-l">
-          <div className="p-4 flex items-center justify-between border-b">
-            <h3 className="font-semibold">Cuenta</h3>
-            <button className="h-8 w-8 grid place-items-center rounded hover:bg-gray-100" onClick={() => setShowProfileSidebar(false)}>✕</button>
-          </div>
-          <div className="p-4 space-y-3">
-            <button className="w-full text-left px-3 py-2 rounded hover:bg-gray-50" onClick={() => { setOpenProfileModal(true); setShowProfileSidebar(false); }}>
-              Mi Perfil
-            </button>
-            <button className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-red-600" onClick={() => { alert('Cerrar sesión (a implementar)'); }}>
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      )}
+      {/* ✅ Renderiza el modal de PERFIL */}
+      <PatientProfile
+        isOpen={openProfileModal}
+        onClose={() => setOpenProfileModal(false)}
+        patientData={patientData}
+        onUpdateData={(nuevo) => setPatientData((prev) => ({ ...prev, ...nuevo }))}
+      />
     </div>
   );
 }
 
-
+/* ---------- Tarjeta simple ---------- */
 function HomeCard({ title, desc, icon, onClick, cta = "Abrir" }) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-5 hover:shadow-sm transition-shadow">
-      <div className="flex items-center gap-2 text-violet-700 mb-2">{icon}<span className="font-medium">{title}</span></div>
+      <div className="flex items-center gap-2 text-violet-700 mb-2">
+        {icon}
+        <span className="font-medium">{title}</span>
+      </div>
       <p className="text-sm text-gray-600 mb-4">{desc}</p>
       <button
         onClick={onClick}
