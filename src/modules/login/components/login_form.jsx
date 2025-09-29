@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAuthStore } from "../hooks/useLoginStore";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -8,31 +10,20 @@ export default function LoginForm() {
 
   const BASE = import.meta.env.VITE_API_BASE_URL;
 
+  const startLogin = useAuthStore((state) => state.startLogin);
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch(`${BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const isJson = (res.headers.get("content-type") || "").includes("application/json");
-      const data = isJson ? await res.json() : null;
-
-      if (!res.ok) {
-        throw new Error(data?.error?.message || "Credenciales inválidas");
-      }
-
-      if (data?.token) localStorage.setItem("token", data.token);
-
-      alert("¡Inicio de sesión exitoso!");
+      console.log({ email, password });
+      await startLogin({ email, password }, navigate);
+      setLoading(false);
     } catch (err) {
-      setError(err.message || "Error de autenticación");
-    } finally {
+      setError(err.message);
       setLoading(false);
     }
   };

@@ -1,43 +1,25 @@
 import { useState } from "react";
-
+import { useAuthStore } from "../hooks/useLoginStore";
+import { useNavigate } from "react-router-dom";
 export default function Verifica_codigo() {
 
   const [codigo, setCodigo] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const BASE = import.meta.env.VITE_API_BASE_URL;
+  const startConfirmCode = useAuthStore((state) => state.startConfirmCode);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    if (!/^\d{6}$/.test(codigo)) {
-      setError("El código debe tener 6 dígitos numéricos");
-      setLoading(false);
-      return;
-    }
 
     try {
-      const res = await fetch(`${BASE}/auth/verificar-codigo`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ codigo }),
-      });
-
-      const isJson = (res.headers.get("content-type") || "").includes("application/json");
-      const data = isJson ? await res.json() : null;
-
-      if (!res.ok) {
-        throw new Error(data?.error?.message || "Código inválido");
-      }
-
-      alert("¡Código verificado correctamente!");
-      // window.location.href = "/dashboard";
+      setLoading(true);
+      await startConfirmCode({ code: codigo }, navigate);
+      setLoading(false);
     } catch (err) {
-      setError(err.message || "Error al verificar el código");
-    } finally {
+      setError(err.message);
       setLoading(false);
     }
   };
