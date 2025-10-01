@@ -1,4 +1,4 @@
-import Login_form from "../components/Login_form.jsx";
+import { Login_form } from "../components";
 import mimimi from "../../../assets/img/mimimi.png";
 
 export const Login = () => {
