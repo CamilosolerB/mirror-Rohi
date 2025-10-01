@@ -1,0 +1,27 @@
+trigger:
+- main   # Rama que dispara el pipeline
+
+pool:
+  vmImage: 'ubuntu-latest'   # Agente Microsoft-hosted gratuito
+
+variables:
+  AWS_REGION: 'us-east-1'         # Región de AWS
+  LAMBDA_NAME: 'ROHI_DEV_USER'    # Nombre exacto de tu Lambda en AWS
+
+steps:
+  # 1. Empaquetar solo el código fuente (sin dependencias, ya están en el Layer)
+  - script: |
+      zip -r lambda-code.zip *.py
+    displayName: 'Empaquetar código fuente de Lambda'
+
+  # 2. Desplegar el código a la Lambda en AWS
+  - task: AWSShellScript@1
+    inputs:
+      awsCredentials: 'AWS connection'   # 👈 Nombre de tu Service Connection en DevOps
+      regionName: 'us-east-1'
+      scriptType: 'inline'
+      inlineScript: |
+        aws lambda update-function-code \
+          --function-name ROHI_DEV_USER \
+          --zip-file fileb://lambda-code.zip
+    displayName: 'Actualizar Lambda en AWS'
