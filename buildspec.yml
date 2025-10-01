@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Instalando dependencias...
+      - npm install
+  build:
+    commands:
+      - echo Compilando aplicación React...
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build
